@@ -64,9 +64,9 @@ if __name__ == '__main__':
                                 eye_image_shape=(108, 180))
         else:
             data_source = Webcam(tensorflow_session=session, batch_size=batch_size,
-                                 camera_id=args.camera_id, fps=args.fps,
-                                 data_format='NCHW' if gpu_available else 'NHWC',
-                                 eye_image_shape=(36, 60))
+                                camera_id=args.camera_id, fps=args.fps,
+                                data_format='NCHW' if gpu_available else 'NHWC',
+                                eye_image_shape=(36, 60))
 
         # Define model
         if args.from_video:
@@ -197,14 +197,14 @@ if __name__ == '__main__':
                         cv.polylines(
                             eye_image_annotated,
                             [np.round(eye_upscale*eye_landmarks[0:8]).astype(np.int32)
-                                                                     .reshape(-1, 1, 2)],
+                                                                    .reshape(-1, 1, 2)],
                             isClosed=True, color=(255, 255, 0), thickness=1, lineType=cv.LINE_AA,
                         )
                     if can_use_iris:
                         cv.polylines(
                             eye_image_annotated,
                             [np.round(eye_upscale*eye_landmarks[8:16]).astype(np.int32)
-                                                                      .reshape(-1, 1, 2)],
+                                                                    .reshape(-1, 1, 2)],
                             isClosed=True, color=(0, 255, 255), thickness=1, lineType=cv.LINE_AA,
                         )
                         cv.drawMarker(
@@ -225,13 +225,13 @@ if __name__ == '__main__':
 
                     # Visualize preprocessing results
                     frame_landmarks = (frame['smoothed_landmarks']
-                                       if 'smoothed_landmarks' in frame
-                                       else frame['landmarks'])
+                                        if 'smoothed_landmarks' in frame
+                                        else frame['landmarks'])
                     for f, face in enumerate(frame['faces']):
                         for landmark in frame_landmarks[f][:-1]:
                             cv.drawMarker(bgr, tuple(np.round(landmark).astype(np.int32)),
-                                          color=(0, 0, 255), markerType=cv.MARKER_STAR,
-                                          markerSize=2, thickness=1, line_type=cv.LINE_AA)
+                                            color=(0, 0, 255), markerType=cv.MARKER_STAR,
+                                            markerSize=2, thickness=1, line_type=cv.LINE_AA)
                         cv.rectangle(
                             bgr, tuple(np.round(face[:2]).astype(np.int32)),
                             tuple(np.round(np.add(face[:2], face[2:])).astype(np.int32)),
@@ -241,11 +241,11 @@ if __name__ == '__main__':
                     # Transform predictions
                     eye_landmarks = np.concatenate([eye_landmarks,
                                                     [[eye_landmarks[-1, 0] + eye_radius,
-                                                      eye_landmarks[-1, 1]]]])
+                                                        eye_landmarks[-1, 1]]]])
                     eye_landmarks = np.asmatrix(np.pad(eye_landmarks, ((0, 0), (0, 1)),
-                                                       'constant', constant_values=1.0))
-                    eye_landmarks = (eye_landmarks *
-                                     eye['inv_landmarks_transform_mat'].T)[:, :2]
+                                                        'constant', constant_values=1.0))
+                    eye_landmarks = (   eye_landmarks *
+                                        eye['inv_landmarks_transform_mat'].T)[:, :2]
                     eye_landmarks = np.asarray(eye_landmarks)
                     eyelid_landmarks = eye_landmarks[0:8, :]
                     iris_landmarks = eye_landmarks[8:16, :]
@@ -331,11 +331,11 @@ if __name__ == '__main__':
                         last_frame_time = time.time()
                         fh, fw, _ = bgr.shape
                         cv.putText(bgr, fps_str, org=(fw - 110, fh - 20),
-                                   fontFace=cv.FONT_HERSHEY_DUPLEX, fontScale=0.8,
-                                   color=(0, 0, 0), thickness=1, lineType=cv.LINE_AA)
+                                    fontFace=cv.FONT_HERSHEY_DUPLEX, fontScale=0.8,
+                                    color=(0, 0, 0), thickness=1, lineType=cv.LINE_AA)
                         cv.putText(bgr, fps_str, org=(fw - 111, fh - 21),
-                                   fontFace=cv.FONT_HERSHEY_DUPLEX, fontScale=0.79,
-                                   color=(255, 255, 255), thickness=1, lineType=cv.LINE_AA)
+                                    fontFace=cv.FONT_HERSHEY_DUPLEX, fontScale=0.79,
+                                    color=(255, 255, 255), thickness=1, lineType=cv.LINE_AA)
                         if not args.headless:
                             cv.imshow('vis', bgr)
                         last_frame_index = frame_index
